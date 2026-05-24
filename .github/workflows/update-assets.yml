@@ -1,0 +1,35 @@
+name: Update Elysiae Assets
+on: 
+    push:
+        paths:
+            - ".github/workflows/update-assets.yml"
+            - "assetUpdater.js"
+    schedule:
+        - cron: "0 */1 * * *"
+    workflow_dispatch:
+
+jobs: 
+    update-assets: 
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v6
+            - name: Set up NodeJS
+              uses: actions/setup-node@v6
+              with:
+                node-version: 26
+            - name: Install dependencies
+              run: |
+                sudo add-apt-repository universe
+                sudo apt update
+                sudo apt install ffmpeg
+            - name: Run asset updater
+              run: |
+                node assetUpdater.js
+            - name: Push changes to repository
+              run: |
+                git config --global user.name 'github-actions[bot]'
+                git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+                git add -A
+                git commit -m "chore: update Elysiae assets registry" && git push origin HEAD:main || echo "No changes are necessary"
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
