@@ -1,37 +1,46 @@
 {
   "nap": {
-    "videos": [
-      "assets/nap/nap-1.mp4"
-    ],
-    "images": [
-      "assets/nap/nap-0.webp"
+    "backgrounds": [
+      {
+        "image": "assets/nap/nap-0.webp",
+        "video": "assets/nap/nap-1.mp4"
+      }
     ]
   },
   "hkrpg": {
-    "videos": [
-      "assets/hkrpg/hkrpg-2.mp4"
-    ],
-    "images": [
-      "assets/hkrpg/hkrpg-1.webp",
-      "assets/hkrpg/hkrpg-0.webp"
+    "backgrounds": [
+      {
+        "image": "assets/hkrpg/hkrpg-0.webp",
+        "video": null
+      },
+      {
+        "image": "assets/hkrpg/hkrpg-1.webp",
+        "video": "assets/hkrpg/hkrpg-2.mp4"
+      }
     ]
   },
   "hk4e": {
-    "videos": [
-      "assets/hk4e/hk4e-3.mp4"
-    ],
-    "images": [
-      "assets/hk4e/hk4e-2.webp",
-      "assets/hk4e/hk4e-1.webp",
-      "assets/hk4e/hk4e-0.webp"
+    "backgrounds": [
+      {
+        "image": "assets/hk4e/hk4e-2.webp",
+        "video": null
+      },
+      {
+        "image": "assets/hk4e/hk4e-0.webp",
+        "video": null
+      },
+      {
+        "image": "assets/hk4e/hk4e-1.webp",
+        "video": "assets/hk4e/hk4e-3.mp4"
+      }
     ]
   },
   "bh3": {
-    "videos": [
-      "assets/bh3/bh3-1.mp4"
-    ],
-    "images": [
-      "assets/bh3/bh3-0.webp"
+    "backgrounds": [
+      {
+        "image": "assets/bh3/bh3-0.webp",
+        "video": "assets/bh3/bh3-1.mp4"
+      }
     ]
   }
 }
