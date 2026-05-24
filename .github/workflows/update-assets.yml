@@ -5,7 +5,7 @@ on:
             - ".github/workflows/update-assets.yml"
             - "assetUpdater.js"
     schedule:
-        - cron: "30 8/6 * * *"
+        - cron: "15 8/6 * * *"
     workflow_dispatch:
 
 jobs: 
