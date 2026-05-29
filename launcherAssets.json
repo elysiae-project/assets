@@ -10,11 +10,11 @@
   "hkrpg": {
     "backgrounds": [
       {
-        "image": "assets/hkrpg/hkrpg-0.webp",
+        "image": "assets/hkrpg/hkrpg-1.webp",
         "video": null
       },
       {
-        "image": "assets/hkrpg/hkrpg-1.webp",
+        "image": "assets/hkrpg/hkrpg-0.webp",
         "video": "assets/hkrpg/hkrpg-2.mp4"
       }
     ]
@@ -22,11 +22,11 @@
   "hk4e": {
     "backgrounds": [
       {
-        "image": "assets/hk4e/hk4e-2.webp",
+        "image": "assets/hk4e/hk4e-0.webp",
         "video": null
       },
       {
-        "image": "assets/hk4e/hk4e-0.webp",
+        "image": "assets/hk4e/hk4e-2.webp",
         "video": null
       },
       {
