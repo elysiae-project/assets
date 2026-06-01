@@ -22,41 +22,58 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+
       - name: Set up NodeJS
         uses: actions/setup-node@v6
         with:
           node-version: 26
+          
       - name: Install dependencies
         run: |
           sudo add-apt-repository universe
           sudo apt update
           sudo apt install ffmpeg
+
       - name: Run asset updater
         run: |
           node assetUpdater.js
+
       - name: Push changes to repository
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add -A
-          git commit -m "chore: update Elysiae assets registry" && git push origin HEAD:main || echo "No changes are necessary"
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            echo "changes_pushed=false" >> $GITHUB_OUTPUT
+          else
+            git commit -m "chore: Update Elysiae assets registry"
+            git push origin HEAD:main
+            echo "changes_pushed=true" >> $GITHUB_OUTPUT
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy:
     needs: update-assets
+    if: needs.update-assets.outputs.changes_pushed == 'true' || github.event_name == 'workflow_dispatch'    
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: main
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: .
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

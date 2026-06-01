@@ -1,6 +1,8 @@
-import { unlink, writeFile } from "node:fs/promises";
+// biome-ignore assist/source/organizeImports: biome is being incorrect and refuses to sort this
 import { exec } from "node:child_process";
-import { createWriteStream } from "node:fs";
+import { createHash } from "node:crypto";
+import { createReadStream, createWriteStream, readdirSync, renameSync, unlinkSync } from "node:fs";
+import { unlink, writeFile } from "node:fs/promises";
 import { get } from "node:https";
 import { join } from "node:path";
 import { promisify } from "node:util";
@@ -8,8 +10,11 @@ const LAUNCHER_ID = "VYTpXlbWo8";
 const LANGUAGE = "en";
 const URL = `https://${["sg", "hyp", "api"].join("-")}.hoyoverse.com/${["hyp", "hyp-connect", "api", "getAllGameBasicInfo"].join("/")}?launcher_id=${LAUNCHER_ID}&language=${LANGUAGE}`;
 const execAsync = promisify(exec);
-const downloadFile = (url, destPath) =>
-    new Promise((resolve, reject) => {
+const getUrlExtension = (url) => url.split(/[#?]/)[0].split(".").pop().trim();
+const getUrlFileName = (url) => url.split("/").pop().trim();
+
+const downloadFile = (url, destPath) => {
+    return new Promise((resolve, reject) => {
         const file = createWriteStream(destPath);
         get(url, (response) => {
             response.pipe(file);
@@ -20,8 +25,25 @@ const downloadFile = (url, destPath) =>
             file.on("error", reject);
         }).on("error", reject);
     });
-const getUrlExtension = (url) => url.split(/[#?]/)[0].split(".").pop().trim();
-(async () => {
+}
+
+const computeFileHash = async (path) => {
+    return new Promise((resolve, reject) => {
+        const hash = createHash("sha256");
+        const stream = createReadStream(path);
+
+        stream.on("data", (c) => hash.update(c))
+        stream.on("end", () => resolve(hash.digest("hex")));
+        stream.on("error", reject);
+    })
+}
+
+const ffmpegFilters = {
+    webp: "-lossless 1 -compression_level 6",
+    webm: "-c:v libx264 -pix_fmt yuv420p -colorspace bt709 -color_primaries bt709 -color_trc iec61966-2-1 -tune animation -preset fast -movflags +faststart -c:a copy"
+}
+
+const updateAssets = async () => {
     const apiResponse = await fetch(URL);
     if (apiResponse.status !== 200) {
         console.error(`ERROR: API Returned non-OK response code of ${apiResponse.status}`);
@@ -29,46 +51,47 @@ const getUrlExtension = (url) => url.split(/[#?]/)[0].split(".").pop().trim();
     }
     const apiData = (await apiResponse.json()).data.game_info_list;
     const launcherAssets = {};
-    for (let i = 0; i < 4; i += 1) {
-        const gameName = apiData[i].game.biz.split("_")[0];
-        console.log(`(${i + 1}/4) Updating ${gameName} assets`);
-        launcherAssets[gameName] = { backgrounds: [] };
-        let fileIndex = 0;
-        await Promise.all(
-            apiData[i].backgrounds.map(async (bgAsset) => {
-                const imageURL = bgAsset.background.url;
-                const videoURL = bgAsset.video.url;
-                const backgroundEntry = { image: null, video: null };
-                for (const [assetURL, assetType] of [
-                    [imageURL, "image"],
-                    [videoURL, "video"],
-                ]) {
-                    if (assetURL === "") {
-                        continue;
-                    }
-                    const currentIndex = fileIndex++;
-                    const fileExtension = getUrlExtension(assetURL);
-                    const tempFileName = join("assets", gameName, `${gameName}-${currentIndex}-temp.${fileExtension}`);
-                    await downloadFile(assetURL, tempFileName);
-                    if (fileExtension === "webm") {
-                        const outputPath = join("assets", gameName, `${gameName}-${currentIndex}.mp4`);
-                        await execAsync(
-                            `ffmpeg -y -i "${tempFileName}" -c:v libx264 -pix_fmt yuv420p -colorspace bt709 -color_primaries bt709 -color_trc iec61966-2-1 -tune animation -preset fast -movflags +faststart -c:a copy "${outputPath}"`
-                        );
-                        backgroundEntry.video = outputPath;
-                    } else {
-                        const outputPath = join("assets", gameName, `${gameName}-${currentIndex}.webp`);
-                        await execAsync(
-                            `ffmpeg -y -i "${tempFileName}" -lossless 1 -compression_level 6 "${outputPath}"`
-                        );
-                        backgroundEntry.image = outputPath;
-                    }
-                    await unlink(tempFileName);
-                }
-                launcherAssets[gameName].backgrounds.push(backgroundEntry);
-            })
-        );
-    }
+    await Promise.all(["bh3", "hk4e", "hkrpg", "nap"].map(async (gameCode, index) => {
+        const outputPath = join("assets", gameCode);
+        const backgrounds = apiData[index].backgrounds;
+
+        await Promise.all(readdirSync(outputPath).map(async (file) => {
+            await unlink(join(outputPath, file));
+        }));
+
+        launcherAssets[gameCode] = [];
+
+        await Promise.all(backgrounds.map(async (bgAsset) => {
+            const imageUrl = bgAsset.background.url;
+            const videoUrl = bgAsset.video.url;
+            const backgroundEntry = { image: null, video: null };
+            const outputDir = join("assets", gameCode);
+
+            for (const [assetURL] of [[imageUrl, "image"], [videoUrl, "video"]]) {
+                if (assetURL === "") continue;
+                const tempFileName = getUrlFileName(assetURL);
+                const ext = getUrlExtension(assetURL);
+                const outputExt = ext === "webm" ? "mp4" : ext;
+
+                // Will be renamed to sha256 hash once processed, so it's ok to use the md5 hash for the original file as the temp file name
+                const initialFileName = join(outputDir, tempFileName);
+                const preHashFileName = join(outputDir, `${crypto.randomUUID()}.${outputExt}`);
+
+                await downloadFile(assetURL, initialFileName);
+                await execAsync(`ffmpeg -y -i "${initialFileName}" ${ffmpegFilters[`${ext}`]} ${preHashFileName}`);
+                unlinkSync(initialFileName);
+
+                const finalHash = await computeFileHash(preHashFileName);
+                const hashedName = join(outputDir, `${finalHash}.${outputExt}`);
+
+                renameSync(preHashFileName, hashedName);
+                backgroundEntry[outputExt === "mp4" ? "video" : "image"] = hashedName;
+            }
+            launcherAssets[gameCode].push(backgroundEntry)
+        }))
+    }));
+
     await writeFile("launcherAssets.json", JSON.stringify(launcherAssets, null, 2));
     console.log("Done");
-})();
+}
+(async () => await updateAssets())();
