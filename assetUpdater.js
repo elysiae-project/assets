@@ -1,4 +1,3 @@
-// biome-ignore assist/source/organizeImports: biome is being incorrect and refuses to sort this
 import { exec } from "node:child_process";
 import { createHash } from "node:crypto";
 import { createReadStream, createWriteStream, readdirSync, renameSync, unlinkSync } from "node:fs";
@@ -6,14 +5,12 @@ import { unlink, writeFile } from "node:fs/promises";
 import { get } from "node:https";
 import { join } from "node:path";
 import { promisify } from "node:util";
-const LAUNCHER_ID = "VYTpXlbWo8";
-const LANGUAGE = "en";
-const URL = `https://${["sg", "hyp", "api"].join("-")}.hoyoverse.com/${["hyp", "hyp-connect", "api", "getAllGameBasicInfo"].join("/")}?launcher_id=${LAUNCHER_ID}&language=${LANGUAGE}`;
-const execAsync = promisify(exec);
-const getUrlExtension = (url) => url.split(/[#?]/)[0].split(".").pop().trim();
-const getUrlFileName = (url) => url.split("/").pop().trim();
 
-const downloadFile = (url, destPath) => {
+export const execAsync = promisify(exec);
+export const getUrlExtension = (url) => url.split(/[#?]/)[0].split(".").pop().trim();
+export const getUrlFileName = (url) => url.split("/").pop().trim();
+
+export const downloadFile = (url, destPath) => {
     return new Promise((resolve, reject) => {
         const file = createWriteStream(destPath);
         get(url, (response) => {
@@ -27,7 +24,7 @@ const downloadFile = (url, destPath) => {
     });
 }
 
-const computeFileHash = async (path) => {
+export const computeFileHash = async (path) => {
     return new Promise((resolve, reject) => {
         const hash = createHash("sha256");
         const stream = createReadStream(path);
@@ -38,10 +35,15 @@ const computeFileHash = async (path) => {
     })
 }
 
-const ffmpegFilters = {
+export const ffmpegFilters = {
     webp: "-lossless 1 -compression_level 6",
     webm: "-c:v libx264 -pix_fmt yuv420p -colorspace bt709 -color_primaries bt709 -color_trc iec61966-2-1 -tune animation -preset fast -movflags +faststart -c:a copy"
 }
+
+
+const LAUNCHER_ID = "VYTpXlbWo8";
+const LANGUAGE = "en";
+const URL = `https://${["sg", "hyp", "api"].join("-")}.hoyoverse.com/${["hyp", "hyp-connect", "api", "getAllGameBasicInfo"].join("/")}?launcher_id=${LAUNCHER_ID}&language=${LANGUAGE}`;
 
 const updateAssets = async () => {
     const apiResponse = await fetch(URL);
@@ -51,7 +53,7 @@ const updateAssets = async () => {
     }
     const apiData = (await apiResponse.json()).data.game_info_list;
     const launcherAssets = {};
-    await Promise.all(["bh3", "hk4e", "hkrpg", "nap"].map(async (gameCode, index) => {
+    await Promise.all(["nap", "hkrpg", "hk4e", "bh3"].map(async (gameCode, index) => {
         const outputPath = join("assets", gameCode);
         const backgrounds = apiData[index].backgrounds;
 
