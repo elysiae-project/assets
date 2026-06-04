@@ -15,6 +15,12 @@
       "video": "assets/hkrpg/f4c2f2b1903ec85ea7bf55f3fe430767630e783506c0b71cf4cc73eb4487c794.mp4"
     }
   ],
+  "bh3": [
+    {
+      "image": "assets/bh3/98587a82c1a82ca85221bd4e47c286c508bcf5d76b94cbe3cc2e6d75ff8a3fd9.webp",
+      "video": "assets/bh3/1b44b8e6f1fc2158ea9bafcc4a328c7bb029a74e1765953c8ca77dca1556a6d1.mp4"
+    }
+  ],
   "hk4e": [
     {
       "image": "assets/hk4e/fc47905c853accf73f9733eb21220b2e48a842f969a8cbd9c43f394444fb1bc8.webp",
@@ -27,12 +33,6 @@
     {
       "image": "assets/hk4e/47afedf96c6f7e13ae42a47603a2b1e51490dfa08cc0d82d8883b8ca6b888b98.webp",
       "video": "assets/hk4e/429580d6fc54ca3e0596b2e09305766b48c2a39081af2e68d8442cfbe4d21205.mp4"
-    }
-  ],
-  "bh3": [
-    {
-      "image": "assets/bh3/98587a82c1a82ca85221bd4e47c286c508bcf5d76b94cbe3cc2e6d75ff8a3fd9.webp",
-      "video": "assets/bh3/1b44b8e6f1fc2158ea9bafcc4a328c7bb029a74e1765953c8ca77dca1556a6d1.mp4"
     }
   ]
 }
