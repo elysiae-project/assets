@@ -27,8 +27,12 @@
   ],
   "bh3": [
     {
-      "image": "assets/bh3/98587a82c1a82ca85221bd4e47c286c508bcf5d76b94cbe3cc2e6d75ff8a3fd9.webp",
-      "video": "assets/bh3/1b44b8e6f1fc2158ea9bafcc4a328c7bb029a74e1765953c8ca77dca1556a6d1.mp4"
+      "image": "assets/bh3/786eef4d3b09db63f20923fb9eca3d24b66df526e9aac823db1bf6c0e78db182.webp",
+      "video": null
+    },
+    {
+      "image": "assets/bh3/20d87aa1fc321a8d0550986bbcf8b4b65539b5a94e93a033e100d37a94b4b4a2.webp",
+      "video": "assets/bh3/cbf3963b0093007f2afbb147dbd2cd68baeada10712708ba3da10783c420f923.mp4"
     }
   ]
 }
