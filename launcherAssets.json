@@ -11,16 +11,6 @@
       "video": "assets/hkrpg/f4c2f2b1903ec85ea7bf55f3fe430767630e783506c0b71cf4cc73eb4487c794.mp4"
     }
   ],
-  "bh3": [
-    {
-      "image": "assets/bh3/786eef4d3b09db63f20923fb9eca3d24b66df526e9aac823db1bf6c0e78db182.webp",
-      "video": null
-    },
-    {
-      "image": "assets/bh3/20d87aa1fc321a8d0550986bbcf8b4b65539b5a94e93a033e100d37a94b4b4a2.webp",
-      "video": "assets/bh3/cbf3963b0093007f2afbb147dbd2cd68baeada10712708ba3da10783c420f923.mp4"
-    }
-  ],
   "hk4e": [
     {
       "image": "assets/hk4e/a5ab4918967a6114b73506e68a49258398d128d9702ce5d663d7b3fb5363f4bf.webp",
@@ -33,6 +23,16 @@
     {
       "image": "assets/hk4e/61bd0f759ef0372e51c8b421c9a415fc747067bbba74c837af6d2387d5120038.webp",
       "video": "assets/hk4e/fd85a24dbde66930012ad62ac325d4a07bd510deb14167e812929b00a724eac2.mp4"
+    }
+  ],
+  "bh3": [
+    {
+      "image": "assets/bh3/786eef4d3b09db63f20923fb9eca3d24b66df526e9aac823db1bf6c0e78db182.webp",
+      "video": null
+    },
+    {
+      "image": "assets/bh3/20d87aa1fc321a8d0550986bbcf8b4b65539b5a94e93a033e100d37a94b4b4a2.webp",
+      "video": "assets/bh3/cbf3963b0093007f2afbb147dbd2cd68baeada10712708ba3da10783c420f923.mp4"
     }
   ]
 }
